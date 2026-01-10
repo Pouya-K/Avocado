@@ -86,7 +86,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 curl -X POST http://localhost:8000/api/v1/check \
   -H "Content-Type: application/json" \
   -d '{"url": "https://www.tiktok.com/@cnn/video/7593504877620317453"}'
-
+ 
 # Second request - served from cache (instant)
 curl -X POST http://localhost:8000/api/v1/check \
   -H "Content-Type: application/json" \
