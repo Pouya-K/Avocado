@@ -137,6 +137,40 @@
     `;
   }
 
+  // Get the URL of the next upcoming video
+  function getNextVideoUrl() {
+    // Find all video containers
+    const containers = document.querySelectorAll('[data-scroll-index]');
+    if (!containers.length) return null;
+
+    // Find the currently visible container (closest to top of viewport)
+    let currentIndex = null;
+    for (const container of containers) {
+      const rect = container.getBoundingClientRect();
+      // Container is "current" if it's mostly visible in the viewport
+      if (rect.top >= -rect.height / 2 && rect.top <= window.innerHeight / 2) {
+        currentIndex = parseInt(container.getAttribute('data-scroll-index'), 10);
+        break;
+      }
+    }
+
+    if (currentIndex === null) return null;
+
+    // Find the next container
+    const nextContainer = document.querySelector(`[data-scroll-index="${currentIndex + 1}"]`);
+    if (!nextContainer) return null;
+
+    const videoWrapper = nextContainer.querySelector('[id^="xgwrapper-"]');
+    const videoId = videoWrapper ? videoWrapper.id.split('-').pop() : null;
+
+    const authorLink = nextContainer.querySelector('a[href^="/@"]');
+    const author = authorLink ? authorLink.href.split('/@').pop() : null;
+
+    return author && videoId
+      ? `https://www.tiktok.com/@${author}/video/${videoId}`
+      : null;
+  }
+
   // Create fact-check button
   function createFactCheckButton() {
     const button = document.createElement('button');
@@ -153,6 +187,11 @@
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
+
+      // Log the next video URL
+      const nextVideoUrl = getNextVideoUrl().split("?lang=en").join("");
+      console.log('[TikTok Fact Checker] Next video URL:', nextVideoUrl);
+
       openPanel();
     });
     return button;
