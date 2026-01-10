@@ -18,12 +18,18 @@ class Settings(BaseSettings):
     # Supadata API Configuration
     SUPADATA_API_KEY: str
     SUPADATA_BASE_URL: str = "https://api.supadata.ai/v1"
-    SUPADATA_METADATA_ENDPOINT: str = "/tiktok/metadata"
+    SUPADATA_METADATA_ENDPOINT: str = "/metadata"
     SUPADATA_TRANSCRIPT_ENDPOINT: str = "/transcript"
     
     # Request Configuration
     REQUEST_TIMEOUT: int = 30
     MAX_RETRIES: int = 3
+    RETRY_DELAY: float = 2.0  # Initial retry delay in seconds
+    RETRY_BACKOFF: float = 2.0  # Exponential backoff multiplier
+    
+    # Caching Configuration
+    CACHE_TTL: int = 3600  # Cache time-to-live in seconds (1 hour)
+    CACHE_MAX_SIZE: int = 1000  # Maximum number of cached items
     
     # CORS Configuration (for browser extension)
     CORS_ORIGINS: list[str] = ["*"]

@@ -102,6 +102,18 @@ async def check_video(request: CheckRequest) -> FactCheckResult:
     
     except SupadataAPIError as e:
         logger.error(f"Supadata API error: {e}")
+        
+        # Special handling for rate limit errors
+        if e.status_code == 429:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=(
+                    "Rate limit exceeded. The video data has been cached and will be served "
+                    "from cache for the next hour. If this persists, consider upgrading your "
+                    "Supadata plan at https://supadata.ai/pricing"
+                )
+            )
+        
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"External API error: {str(e)}"
