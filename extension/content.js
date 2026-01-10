@@ -19,6 +19,9 @@
     </svg>`
   };
 
+  // Track processed videos to avoid duplicates
+  const processedVideos = new Set();
+
   // Panel reference
   let panel = null;
   let overlay = null;
@@ -35,15 +38,6 @@
     panel = document.createElement('div');
     panel.className = 'fact-check-panel';
     panel.innerHTML = `
-      <div class="panel-header">
-        <h2>
-          ${ICONS.factCheck}
-          Fact Check Results
-        </h2>
-        <button class="close-btn" aria-label="Close panel">
-          ${ICONS.close}
-        </button>
-      </div>
       <div class="panel-content">
         <div class="loading-state">
           <div class="spinner"></div>
@@ -51,9 +45,6 @@
         </div>
       </div>
     `;
-
-    // Add close button listener
-    panel.querySelector('.close-btn').addEventListener('click', closePanel);
 
     document.body.appendChild(panel);
   }
@@ -146,25 +137,74 @@
     `;
   }
 
-  // Create the fixed fact-check button
-  function createFixedButton() {
+  // Create fact-check button
+  function createFactCheckButton() {
     const button = document.createElement('button');
     button.className = 'fact-check-btn';
-    button.innerHTML = ICONS.search;
+
+    // Use the avocado logo image
+    const logo = document.createElement('img');
+    logo.src = chrome.runtime.getURL('logo.png');
+    logo.alt = 'Fact Check';
+    logo.className = 'fact-check-logo';
+    button.appendChild(logo);
+
     button.title = 'Fact Check This Video';
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
       openPanel();
     });
-    document.body.appendChild(button);
-    console.log('[TikTok Fact Checker] Button added to page');
+    return button;
+  }
+
+  // Find and process TikTok video containers
+  function processVideos() {
+    // Find all action button sidebars (the column with like, comment, share, etc.)
+    const sidebars = document.querySelectorAll('section[class*="SectionActionBarContainer"]');
+
+    sidebars.forEach(sidebar => {
+      // Check if button already exists in this sidebar
+      if (sidebar.querySelector('.fact-check-btn')) return;
+
+      // Create unique identifier
+      const videoId = Math.random().toString(36).substr(2, 9);
+      if (processedVideos.has(videoId)) return;
+
+      // Create and prepend button (so it appears at the top, above profile pic)
+      const button = createFactCheckButton();
+      sidebar.prepend(button);
+
+      processedVideos.add(videoId);
+      console.log('[TikTok Fact Checker] Button added to sidebar');
+    });
   }
 
   // Initialize the extension
   function init() {
     console.log('[TikTok Fact Checker] Extension loaded');
-    createFixedButton();
+
+    // Process existing videos
+    processVideos();
+
+    // Watch for new videos being loaded (infinite scroll)
+    const observer = new MutationObserver((mutations) => {
+      let shouldProcess = false;
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+          shouldProcess = true;
+          break;
+        }
+      }
+      if (shouldProcess) {
+        processVideos();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   }
 
   // Wait for page to be ready
