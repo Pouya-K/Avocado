@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock TikTok Feed</title>
+    <link rel="stylesheet" href="extension/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            scroll-snap-type: y mandatory;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+        .video-container {
+            width: 350px;
+            height: 600px;
+            background-color: #222;
+            margin-bottom: 20px;
+            position: relative;
+            scroll-snap-align: start;
+            border-radius: 8px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-placeholder {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="feed-container">
+        <div class="video-container" data-e2e="recommend-list-item-container">
+            <div class="video-placeholder">
+                <h3>Video 1</h3>
+                <p>Simulating TikTok content</p>
+            </div>
+        </div>
+        <div class="video-container" data-e2e="recommend-list-item-container">
+            <div class="video-placeholder">
+                <h3>Video 2</h3>
+                <p>Simulating TikTok content</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the content script manually for testing -->
+    <script src="extension/content.js"></script>
+</body>
+</html>

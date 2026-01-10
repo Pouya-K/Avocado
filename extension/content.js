@@ -16,6 +16,11 @@
     </svg>`,
     search: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </svg>`,
+    avocado: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#568203" d="M12,2C8,2,5,6,5,12c0,6,3,10,7,10s7-4,7-10C19,6,16,2,12,2z"/>
+      <path fill="#bef264" d="M12,4c-3,0-5,4-5,9c0,5,2,7,5,7s5-2,5-7C17,8,15,4,12,4z"/>
+      <circle cx="12" cy="14" r="3" fill="#5C4033"/>
     </svg>`
   };
 
@@ -35,25 +40,13 @@
     panel = document.createElement('div');
     panel.className = 'fact-check-panel';
     panel.innerHTML = `
-      <div class="panel-header">
-        <h2>
-          ${ICONS.factCheck}
-          Fact Check Results
-        </h2>
-        <button class="close-btn" aria-label="Close panel">
-          ${ICONS.close}
-        </button>
-      </div>
       <div class="panel-content">
         <div class="loading-state">
-          <div class="spinner"></div>
+          <div class="spinner">${ICONS.avocado}</div>
           <p class="loading-text">Analyzing video content...</p>
         </div>
       </div>
     `;
-
-    // Add close button listener
-    panel.querySelector('.close-btn').addEventListener('click', closePanel);
 
     document.body.appendChild(panel);
   }
@@ -90,21 +83,65 @@
     const content = panel.querySelector('.panel-content');
     content.innerHTML = `
       <div class="loading-state">
-        <div class="spinner"></div>
+        <div class="spinner">${ICONS.avocado}</div>
         <p class="loading-text">Analyzing video content...</p>
       </div>
     `;
   }
 
-  // Show demo results (placeholder for actual Gemini integration)
+  // Show demo results with SVG Speedometer
   function showDemoResults() {
     const content = panel.querySelector('.panel-content');
+    const score = 70; // Demo score
+
+    // Determine color based on score
+    let color = '#ef4444'; // Red
+    if (score >= 80) color = '#22c55e'; // Green
+    else if (score >= 50) color = '#eab308'; // Yellow
+
+    // SVG Geometry
+    const radius = 85;
+    const strokeWidth = 16;
+    const center = 110; // ViewBox width / 2
+    const circumference = Math.PI * radius;
+    const dashValue = (score / 100) * circumference;
+
     content.innerHTML = `
       <div class="credibility-section">
-        <div class="score-circle">
-          <span class="score-value">70%</span>
-        </div>
-        <p class="score-label">Credibility Score</p>
+        <div class="speedometer-container">
+          <svg class="speedometer-svg" viewBox="0 0 220 170">
+            <defs>
+              <linearGradient id="grad-spectrum" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#bef264;stop-opacity:1" /> <!-- Avocado Light -->
+                <stop offset="50%" style="stop-color:#4ade80;stop-opacity:1" /> <!-- Avocado Medium -->
+                <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" /> <!-- Avocado Dark -->
+              </linearGradient>
+            </defs>
+
+            <!-- Background Arc -->
+            <path d="M ${center - radius} 100 A ${radius} ${radius} 0 0 1 ${center + radius} 100" 
+                  fill="none" 
+                  stroke="rgba(255,255,255,0.1)" 
+                  stroke-width="${strokeWidth}" 
+                  stroke-linecap="round"/>
+            
+            <!-- Progress Arc -->
+            <path d="M ${center - radius} 100 A ${radius} ${radius} 0 0 1 ${center + radius} 100" 
+                  fill="none" 
+                  stroke="url(#grad-spectrum)" 
+                  stroke-width="${strokeWidth}" 
+                  stroke-linecap="round"
+                  stroke-dasharray="${dashValue}, ${circumference}"
+                  class="meter-fill"/>
+            
+            <!-- Labels (Below the arc) -->
+            <text x="${center}" y="80" text-anchor="middle" class="label-text" fill="#94a3b8">
+              Reliable
+            </text>
+            <text x="${center}" y="130" text-anchor="middle" class="score-text" fill="#bef264">
+              ${score}%
+            </text>
+          </svg>
       </div>
 
       <div class="summary-section">
@@ -118,28 +155,18 @@
 
       <div class="sources-section">
         <h3 class="section-title">Verification Sources</h3>
-        
-        <div class="source-item">
-          <div class="source-icon">${ICONS.link}</div>
-          <div class="source-info">
-            <p class="source-name">Reuters Fact Check</p>
-            <a href="#" class="source-url">reuters.com/fact-check/...</a>
+        <div class="sources-text-box">
+          <div class="source-line">
+            <span class="source-emoji">🔗</span>
+            <a href="https://www.reuters.com/fact-check" target="_blank" class="source-link-text">Reuters Fact Check</a>
           </div>
-        </div>
-        
-        <div class="source-item">
-          <div class="source-icon">${ICONS.link}</div>
-          <div class="source-info">
-            <p class="source-name">Associated Press</p>
-            <a href="#" class="source-url">apnews.com/article/...</a>
+          <div class="source-line">
+            <span class="source-emoji">🔗</span>
+            <a href="https://apnews.com/hub/ap-fact-check" target="_blank" class="source-link-text">Associated Press</a>
           </div>
-        </div>
-        
-        <div class="source-item">
-          <div class="source-icon">${ICONS.link}</div>
-          <div class="source-info">
-            <p class="source-name">Snopes</p>
-            <a href="#" class="source-url">snopes.com/fact-check/...</a>
+          <div class="source-line">
+            <span class="source-emoji">🔗</span>
+            <a href="https://www.snopes.com" target="_blank" class="source-link-text">Snopes</a>
           </div>
         </div>
       </div>
