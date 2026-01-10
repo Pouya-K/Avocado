@@ -10,7 +10,6 @@ FastAPI backend service for analyzing TikTok video credibility using the Supadat
 - ✅ **Error Handling**: Comprehensive error handling with custom exceptions
 - ✅ **Pydantic Validation**: Type-safe data models for all requests/responses
 - 🚧 **Fact Checking**: LLM-based credibility analysis (planned)
-- 🚧 **Audio Transcription**: ElevenLabs integration for videos without captions (planned)
 
 ## Project Structure
 
@@ -173,15 +172,13 @@ pytest tests/
 - [x] Pydantic schema integration
 - [x] Comprehensive error handling
 - [ ] LLM-based fact checking (future)
-- [ ] Audio transcription via ElevenLabs (future)
 - [ ] Unit tests for scraper service
 - [ ] Integration tests for API endpoints
 
 ## Next Steps
 
 1. **Implement Fact Checker**: Add LLM integration for credibility analysis
-2. **Add Transcriber**: Integrate ElevenLabs for audio transcription
-3. **Testing**: Write comprehensive test suite
+2. **Testing**: Write comprehensive test suite
 4. **Rate Limiting**: Implement request rate limiting
 5. **Authentication**: Add API key authentication for clients
 6. **Monitoring**: Add logging and metrics collection

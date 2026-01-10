@@ -41,3 +41,32 @@ htmlcov/
 
 # Logs
 *.log
+logs/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*.bak
+*~.nib
+logs/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Python virtual environments
+.Python
+pyvenv.cfg
+pip-log.txt
+pip-delete-this-directory.txt
