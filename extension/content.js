@@ -153,7 +153,14 @@
   function createFactCheckButton() {
     const button = document.createElement('button');
     button.className = 'fact-check-btn';
-    button.innerHTML = ICONS.search;
+
+    // Use the avocado logo image
+    const logo = document.createElement('img');
+    logo.src = chrome.runtime.getURL('logo.png');
+    logo.alt = 'Fact Check';
+    logo.className = 'fact-check-logo';
+    button.appendChild(logo);
+
     button.title = 'Fact Check This Video';
     button.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -165,41 +172,23 @@
 
   // Find and process TikTok video containers
   function processVideos() {
-    // TikTok video containers - these selectors may need adjustment based on TikTok's current DOM structure
-    const videoSelectors = [
-      '[data-e2e="recommend-list-item-container"]',
-      '[data-e2e="video-player-container"]',
-      'div[class*="DivVideoContainer"]',
-      'div[class*="DivItemContainer"]'
-    ];
+    // Find all action button sidebars (the column with like, comment, share, etc.)
+    const sidebars = document.querySelectorAll('section[class*="SectionActionBarContainer"]');
 
-    videoSelectors.forEach(selector => {
-      const videos = document.querySelectorAll(selector);
+    sidebars.forEach(sidebar => {
+      // Check if button already exists in this sidebar
+      if (sidebar.querySelector('.fact-check-btn')) return;
 
-      videos.forEach(video => {
-        // Create unique identifier for this video container
-        const videoId = video.getAttribute('data-video-id') ||
-          video.querySelector('video')?.src ||
-          Math.random().toString(36).substr(2, 9);
+      // Create unique identifier
+      const videoId = Math.random().toString(36).substr(2, 9);
+      if (processedVideos.has(videoId)) return;
 
-        if (processedVideos.has(videoId)) return;
+      // Create and prepend button (so it appears at the top, above profile pic)
+      const button = createFactCheckButton();
+      sidebar.prepend(button);
 
-        // Check if button already exists
-        if (video.querySelector('.fact-check-btn')) return;
-
-        // Make sure container is relatively positioned
-        const computedStyle = window.getComputedStyle(video);
-        if (computedStyle.position === 'static') {
-          video.style.position = 'relative';
-        }
-
-        // Add button
-        const button = createFactCheckButton();
-        video.appendChild(button);
-
-        processedVideos.add(videoId);
-        console.log('[TikTok Fact Checker] Button added to video');
-      });
+      processedVideos.add(videoId);
+      console.log('[TikTok Fact Checker] Button added to sidebar');
     });
   }
 
