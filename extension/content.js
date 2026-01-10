@@ -85,6 +85,7 @@
   function showLoadingState() {
     const content = panel.querySelector('.panel-content');
     content.innerHTML = `
+      <p class="panel-title">Avocado</p>
       <div class="loading-state">
         <div class="spinner">${ICONS.avocado}</div>
         <p class="loading-text">Analyzing video content...</p>
@@ -110,6 +111,7 @@
     const dashValue = (score / 100) * circumference;
 
     content.innerHTML = `
+      <p class="panel-title">Avocado</p>
       <div class="credibility-section">
         <div class="speedometer-container">
           <svg class="speedometer-svg" viewBox="0 0 220 170">
@@ -232,7 +234,8 @@
       e.preventDefault();
 
       // Log the next video URL
-      const nextVideoUrl = getNextVideoUrl().split("?lang=en").join("");
+      const rawUrl = getNextVideoUrl();
+      const nextVideoUrl = rawUrl ? rawUrl.split("?lang=en").join("") : null;
       console.log('[TikTok Fact Checker] Next video URL:', nextVideoUrl);
 
       openPanel();
