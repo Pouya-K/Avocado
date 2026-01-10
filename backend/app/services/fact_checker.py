@@ -45,8 +45,16 @@ INSTRUCTIONS:
 Analyze the video content and transcript to verify the most critical information.
 1. TARGET KEY CLAIMS: Identify the top 3 most significant factual claims.
 2. DIRECT VERIFICATION: Perform a single, efficient Google Search to verify these claims.
-3. CONCISE REPORTING: For each claim, provide a 1-2 sentence verification and 1 recent, working link to a reliable news source.
-4. SCORING: Provide an overall credibility score (0.0 to 1.0) and a brief summary."""
+3. CONCISE REPORTING: For each claim, provide a 1-2 sentence verification.
+4. VALID SOURCES: For each claim, provide a singular reliable source with the specific details found in your Google Search results.
+   - RELIABILITY CRITERIA: Prioritize hard news organizations, academic journals, and government agencies. 
+   - EXAMPLES: Reuters, Associated Press (AP), BBC News, The New York Times, Wall Street Journal, Nature, Science, NIH.gov, etc.
+   - AVOID: Social media posts (Twitter/X, Reddit), YouTube, personal blogs, tabloid sites (The Sun, TMZ), or unverified news outlets.
+   - For each source, you MUST provide:
+     a) THE EXACT ARTICLE TITLE.
+     b) THE NAME OF THE PUBLICATION/SOURCE.
+   - If no highly reliable source is found for a specific claim, explain that in the verification text and leave the sources list empty for that claim.
+5. SCORING: Provide an overall credibility score (0.0 to 1.0) and a brief summary."""
         return prompt
 
     async def analyze_credibility(self, tiktok_data: TikTokData) -> FactCheckResult:
@@ -90,6 +98,7 @@ Analyze the video content and transcript to verify the most critical information
             result.has_transcript = tiktok_data.has_transcript
             result.analyzed_text = tiktok_data.transcript
             result.processing_time_ms = int((time.time() - start_time) * 1000)
+
 
             logger.info(f"Analysis successful for {tiktok_data.video_id} (Score: {result.credibility_score})")
             return result

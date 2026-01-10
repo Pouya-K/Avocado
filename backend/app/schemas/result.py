@@ -1,8 +1,9 @@
 """
 Pydantic schemas for fact check results.
 """
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from typing import Optional
+import urllib.parse
 from enum import Enum
 
 
@@ -18,8 +19,15 @@ class ReliableSource(BaseModel):
     """Schema for a reliable news source link."""
     
     title: str = Field(..., description="Article or page title")
-    url: str = Field(..., description="Full URL to the source")
     source: str = Field(..., description="Publication or organization name")
+
+    @computed_field
+    @property
+    def url(self) -> str:
+        """Automatically generated Search URL (Google I'm Feeling Lucky)."""
+        query = f"{self.title} {self.source}"
+        encoded_query = urllib.parse.quote_plus(query)
+        return f"https://www.google.com/search?q={encoded_query}&btnI=1"
 
 
 class ClaimCheck(BaseModel):
